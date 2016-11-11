@@ -9,7 +9,7 @@ sudo wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-mav
 sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
 sudo yum install java-1.7.0-openjdk
 sudo yum install -y apache-maven
-sudo yum install -y git
+sudo yum install -y git emacs vim # hacking tools
 
 echo "Downloading aws java sdk..."
 wget https://sdk-for-java.amazonwebservices.com/latest/aws-java-sdk.zip

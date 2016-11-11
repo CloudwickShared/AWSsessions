@@ -16,6 +16,12 @@ wget https://sdk-for-java.amazonwebservices.com/latest/aws-java-sdk.zip
 unzip aws-java-sdk.zip
 echo "Done"
 
+echo "Downloading and compiling AWS sample app"
+git clone https://github.com/awslabs/aws-java-sample.git
+cd aws-java-sample
+mvn package
+cd ..
+
 ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_rsa -q -N ""
 
 cat ~/.ssh/id_rsa.pub

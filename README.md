@@ -42,17 +42,22 @@ Wait for the instance to start fully. If this is your only instance, you can get
 ```
 instance_id=`aws ec2 describe-instances --output text --query 'Reservations[*].Instances[*].InstanceId'`
 ```
+Let's add a tag so we can find the machine again.
+
+```
+aws ec2 create-tags --resources $instance_id --tags Key=Name,Value=TutorialWorkstation
+```
 
 Now you can query whether the instance is running or not by polling with this command.
 
 ```
-aws ec2 describe-instances --instance-ids $instance_id --output text --query 'Reservations[*].Instances[*].State.Name'
+aws ec2 describe-instances --filter "Name=tag:Name,Values=TutorialWorkstation" --output text --query 'Reservations[*].Instances[*].State.Name'
 
 ```
 When the instance has started (state is `running`)
 
 ```
-myec2=`aws ec2 describe-instances --instance-ids $instance_id --output text --query 'Reservations[*].Instances[*].PublicIpAddress'`
+myec2=`aws ec2 describe-instances --filter "Name=tag:Name,Values=TutorialWorkstation" --output text --query 'Reservations[*].Instances[*].PublicIpAddress'`
 ```
 
 ```
@@ -68,4 +73,6 @@ And when you get there, you can set the box up for AWS development by downloadin
 
 You can put the kettle on as everything updates and installs, and at the end you will be prompted to input your AWS API credentials (created at the start).
 
-At this point you have a machine which can compile code using the AWS SDK and you can launch new machines and clusters. I would advise treating this as a "disposable" computer, which means don't keep large amounts of code on it, push everything to SCM (e.g. gitlab/github), and terminate it at the end of the day. That way your build process and deploy procedures will be definitely repeatable and you won't have the "works on my computer" problem or the problem that you've tinkered with something until it works but you can't explain to someone else how you did it.
+At this point you have a machine which can compile code using the AWS SDK and you can launch new machines and clusters. I would advise treating this as a "disposable" computer, which means don't keep large amounts of code on it, push everything to SCM (e.g. gitlab/github), and terminate it at the end of the day. That way your build process and deploy procedures will be definitely repeatable and you won't have the "works on my computer" problem or the problem that you've tinkered with something until it works but you can't explain to someone else how you did it. It will also save you money in general if you "put away your toys" at the end of the day, but that means you need to have the discipline to script the setup and shutdown.
+
+To terminate your instance, use `aws ec2 terminate-instances --instance-ids $instance_id`.

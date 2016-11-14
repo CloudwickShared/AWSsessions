@@ -4,14 +4,14 @@ This is a set up to get you productively messing around with AWS ASAP.
 
 You will need to: have an AWS account
 
-One slight thing which makes this not completely clockwork: you need to be aware of what region you're in. This tutorial assumes eu-west-1 because I'm eurocentric and anglophone (and a quarter Irish ;-) ).
+One slight thing which makes this not completely clockwork: you need to be aware of what region you're in. This tutorial assumes eu-west-1 because I'm based in the EU (and a quarter Irish ;-) ).
 
 
 ## Access Keys
 
 Log in here: https://console.aws.amazon.com/iam/home?region=eu-west-1#security_credential
 
-and create and save a new access key. You only get one chance to save it, but it's not a huge tragedy if you lose it: you just have to create another one.
+and create and save a new access key. You only get one chance to save it, but it's not a huge tragedy if you lose it: you just have to create another one. You will need it at the end of the process.
 
 
 ## Launching a new EC2 workstation instance
@@ -63,4 +63,9 @@ And when you get there, you can set the box up for AWS development by downloadin
 `wget https://raw.githubusercontent.com/derwinmcgeary/AWSsessions/master/setup-aws.sh`
 
 `chmod +x setup-aws.sh`
+
 `./setup-aws.sh`
+
+You can put the kettle on as everything updates and installs, and at the end you will be prompted to input your AWS API credentials (created at the start).
+
+At this point you have a machine which can compile code using the AWS SDK and you can launch new machines and clusters. I would advise treating this as a "disposable" computer, which means don't keep large amounts of code on it, push everything to SCM (e.g. gitlab/github), and terminate it at the end of the day. That way your build process and deploy procedures will be definitely repeatable and you won't have the "works on my computer" problem or the problem that you've tinkered with something until it works but you can't explain to someone else how you did it.

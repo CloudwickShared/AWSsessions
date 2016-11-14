@@ -37,15 +37,19 @@ Launch a new EC2 instance with the necessary Key Pair and Security Group
 `aws ec2 run-instances --image-id ami-9398d3e0 --count 1 --instance-type t2.micro --key-name TutorialKeyPair --security-groups tutorial-sg`
 
 
-Wait for the instance to start fully
+Wait for the instance to start fully. If this is your only instance, you can get the instance id automatically with the following command, otherwise you can see it in the output of the `run-instances` command.
+
+```
+instance_id=`aws ec2 describe-instances --output text --query 'Reservations[*].Instances[*].InstanceId'`
 ```
 
-instance_id=`aws ec2 describe-instances --output text --query 'Reservations[*].Instances[*].InstanceId'`
+Now you can query whether the instance is running or not by polling with this command.
 
+```
 aws ec2 describe-instances --instance-ids $instance_id --output text --query 'Reservations[*].Instances[*].State.Name'
 
 ```
-When the instance has started
+When the instance has started (state is `running`)
 
 myec2=`aws ec2 describe-instances --instance-ids $instance_id --output text --query 'Reservations[*].Instances[*].PublicIpAddress'`
 

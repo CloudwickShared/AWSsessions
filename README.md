@@ -28,21 +28,23 @@ I prefer to use the CLI as much as possible, and the way to do that here is:
 
 [Create a new SSH key Pair](http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-keypairs.html)
 
-`aws ec2 create-key-pair --key-name TutorialKeyPair --query 'KeyMaterial' --output text > TutorialKeyPair.pem`
+`aws ec2 create-key-pair --key-name TutorialKeyPair --query 'KeyMaterial' --output text > ~/.ssh/TutorialKeyPair.pem`
 
-`chmod 0600 TutorialKeyPair.pem`
+`chmod 0600 ~/.ssh/TutorialKeyPair.pem`
 
 Launch a new EC2 instance with the necessary Key Pair and Security Group
 
-`aws ec2 run-instances --image-id ami-9398d3e0 --count 1 --instance-type t1.micro --key-name TutorialKeyPair --security-groups tutorial-sg`
+`aws ec2 run-instances --image-id ami-9398d3e0 --count 1 --instance-type t2.micro --key-name TutorialKeyPair --security-groups tutorial-sg`
 
 
 Wait for the instance to start fully
+```
 
 instance_id=`aws ec2 describe-instances --output text --query 'Reservations[*].Instances[*].InstanceId'`
 
-`aws ec2 describe-instances --instance-ids $instance_id --output text --query 'Reservations[*].Instances[*].State.Name'`
+aws ec2 describe-instances --instance-ids $instance_id --output text --query 'Reservations[*].Instances[*].State.Name'
 
+```
 When the instance has started
 
 myec2=`aws ec2 describe-instances --instance-ids $instance_id --output text --query 'Reservations[*].Instances[*].PublicIpAddress'`

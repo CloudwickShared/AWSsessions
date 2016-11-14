@@ -22,8 +22,5 @@ cd aws-java-sample
 mvn package
 cd ..
 
-ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_rsa -q -N ""
-
-cat ~/.ssh/id_rsa.pub
-
-echo "Please import the above key to https://eu-west-1.console.aws.amazon.com/ec2/v2/home?region=eu-west-1#KeyPairs"
+echo "Please enter your Amazon API keys to finish setup"
+aws configure

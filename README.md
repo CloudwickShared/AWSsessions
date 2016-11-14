@@ -51,10 +51,13 @@ aws ec2 describe-instances --instance-ids $instance_id --output text --query 'Re
 ```
 When the instance has started (state is `running`)
 
+```
 myec2=`aws ec2 describe-instances --instance-ids $instance_id --output text --query 'Reservations[*].Instances[*].PublicIpAddress'`
+```
 
-ssh -i ~/.ssh/courseraproject.pem ec2-user@$myec2
-
+```
+ssh -i ~/.ssh/TutorialKeyPair.pem ec2-user@$myec2
+```
 And when you get there, you can set the box up for AWS development by downloading and running the setup script
 
 `wget https://raw.githubusercontent.com/derwinmcgeary/AWSsessions/master/setup-aws.sh`

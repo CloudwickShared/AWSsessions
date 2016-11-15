@@ -8,7 +8,7 @@ Let's create a simple website, by using the AWS CLI to create a bucket, enable p
 
 ## Create a bucket
 
-Bucket names must be *globally unique* so any example name here would be a failure. Replace `<bucket-name>` with your own idea.
+Bucket names must be *globally unique* so any example name here would be a failure. Replace `<bucket-name>` with your own idea. If you actually want to host your page on S3, it's best to use your domain name (e.g. data-lake.guru or similar)
 
 ```
 aws s3 mb --region eu-west-1 s3://<bucket-name>

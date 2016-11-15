@@ -11,17 +11,33 @@ Let's create a simple website, by using the AWS CLI to create a bucket, enable p
 Bucket names must be *globally unique* so any example name here would be a failure. Replace `<bucket-name>` with your own idea.
 
 ```
-aws s3 mb s3://<bucket-name>
+aws s3 mb --region eu-west-1 s3://<bucket-name>
 ```
 
 Assuming there were no errors, you now have a bucket.
 
 ## Configure the bucket
 
-To add public read access we need to use `aws s3api`:
-
+To add public read access we need to create a policy in a file called (say) `policy.json`:
 ```
-aws s3api put-bucket-acl --bucket <bucket-name> --grant-read uri=http://acs.amazonaws.com/groups/global/AllUsers
+{
+  "Version":"2012-10-17",
+  "Statement": [{
+    "Sid": "Allow Public Access to All Objects",
+    "Effect": "Allow",
+    "Principal": "*",
+    "Action": "s3:GetObject",
+    "Resource": "arn:aws:s3:::<bucket-name>/*"
+  }
+ ]
+}
+```
+
+Then push it to Amazon with `aws s3api` like this:
+```
+
+aws s3api put-bucket-policy --bucket <bucket-name> --policy file://policy.json
+
 ```
 
 ## Put content up
@@ -55,12 +71,16 @@ Now we can move that file to the bucket, and designate it as our index page.
 
 ```
 aws s3 cp index.html s3://<bucket-name>/index.html
+# alternatively, you can use
+# aws s3 sync . s3://<bucket-name>
+# to copy all files in the current directory
+
 aws s3 website s3://<bucket-name> --index-document index.html
 ```
 
 ## Test
 
-That's it done!  You can go to the url http://<bucket-name>.s3.amazonaws.com and see the page live on the public Internet.
+That's it done!  You can go to the url http://<bucket-name>.s3-website-eu-west-1.amazonaws.com and see the page live on the public Internet.
 
 ## Teardown
 

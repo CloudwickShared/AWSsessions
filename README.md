@@ -13,6 +13,13 @@ Log in here: https://console.aws.amazon.com/iam/home?region=eu-west-1#security_c
 
 and create and save a new access key. You only get one chance to save it, but it's not a huge tragedy if you lose it: you just have to create another one. You will need it at the end of the process.
 
+## Setting up AWS CLI
+
+[Instructions for various OSes here](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-set-up.html)
+
+You do not have to do this: you can use the web interface to do the same steps, just make sure to choose the same AMI and instance size. It will be faster in the long run to put these steps in a script so you can run `./startWorkstation` and start working.
+
+If you can run `aws s3 ls` withour error, then your set up is working.
 
 ## Launching a new EC2 workstation instance
 
@@ -40,7 +47,7 @@ Launch a new EC2 instance with the necessary Key Pair and Security Group
 Wait for the instance to start fully. If this is your only instance, you can get the instance id automatically with the following command, otherwise you can see it in the output of the `run-instances` command.
 
 ```
-instance_id=`aws ec2 describe-instances --output text --query 'Reservations[*].Instances[*].InstanceId'`
+instance_id=`aws ec2 describe-instances --filters "Name=key-name,Values=TutorialKeyPair" --output text --query 'Reservations[*].Instances[*].InstanceId'`
 ```
 Let's add a tag so we can find the machine again.
 

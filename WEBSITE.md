@@ -80,7 +80,7 @@ aws s3 website s3://<bucket-name> --index-document index.html
 
 ## Test
 
-That's it done!  You can go to the url http://<bucket-name>.s3-website-eu-west-1.amazonaws.com and see the page live on the public Internet.
+That's it done!  You can go to the url http://&lt;bucket-name&gt;.s3-website-eu-west-1.amazonaws.com and see the page live on the public Internet.
 
 ## Teardown
 

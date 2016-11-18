@@ -122,7 +122,7 @@ Configure aws-kinesis-agent by putting the following in `/etc/aws-kinesis/agent.
  "flows": [
  {
  "filePattern": "/home/ec2-user/logs/tutorial*",
- "deliveryStream": "cloudwick-tutorial-stream",
+ "deliveryStream": "web-log-ingestion-stream",
  "dataProcessingOptions": [
  {
  "initialPostion": "START_OF_FILE",

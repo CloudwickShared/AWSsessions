@@ -116,9 +116,9 @@ Configure aws-kinesis-agent by putting the following in `/etc/aws-kinesis/agent.
 
 ```
 {
- "cloudwatch.endpoint": "monitoring.us-east-1.amazonaws.com",
+ "cloudwatch.endpoint": "monitoring.eu-west-1.amazonaws.com",
  "cloudwatch.emitMetrics": true,
- "firehose.endpoint": "firehose.us-east-1.amazonaws.com",
+ "firehose.endpoint": "firehose.eu-west-1.amazonaws.com",
  "flows": [
  {
  "filePattern": "/home/ec2-user/logs/tutorial*",

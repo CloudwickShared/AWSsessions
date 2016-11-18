@@ -114,11 +114,13 @@ Now you have a configured firehose for delivering to S3.
 
 ### Sending logs to the firehose
 
-Configure aws-kinesis-agent by putting the following in `/etc/aws-kinesis/agent.json`
+Configure aws-kinesis-agent by putting the following in `/etc/aws-kinesis/agent.json`. You will need to include your own credentials, of course.
 
 ```
 {
- "cloudwatch.endpoint": "monitoring.eu-west-1.amazonaws.com",
+ "awsAccessKeyId":"AKIAIECTG5GAWEFTGIA",
+ "awsSecretAccessKey":"32csLMA3asdflkaerglknSkYvwIasdflknnRV8El",
+"cloudwatch.endpoint": "monitoring.eu-west-1.amazonaws.com",
  "cloudwatch.emitMetrics": true,
  "firehose.endpoint": "firehose.eu-west-1.amazonaws.com",
  "flows": [
@@ -137,11 +139,18 @@ Configure aws-kinesis-agent by putting the following in `/etc/aws-kinesis/agent.
 }
 ```
 
-Then run `sudo service aws-kinesis-agent start`
+Then run
+```
+sudo service aws-kinesis-agent start
+```
 
 #### Start the logs
-`python Fake-Apache-Log-Generator/apache-fake-log-gen.py -o LOG -n 0 -p /home/ec2-user/logs/tutorial`
 
+Run
+
+```
+python Fake-Apache-Log-Generator/apache-fake-log-gen.py -o LOG -n 0 -p /home/ec2-user/logs/tutorial
+```
 
 ## Step 4: Start ElasticSearch
 

@@ -4,7 +4,7 @@ This is an automation of [this tutorial from Amazon](https://d0.awsstatic.com/Pr
 
 ## Notice
 
-You need to replace all occurences of **cloudwick-tutorial-log-bucket** and of **749147323776**
+You need to replace all occurences of **cloudwick-tutorial-log-bucket** and of **749147323776**. In addition, you should use your own credentials for the aws-kinesis-agent config in step 3.
 
 ## Step 1
 
@@ -42,7 +42,10 @@ Put the following into fire.json:
 }
 ```
 
-and run `aws iam create-role --role-name fire-role --assume-role-policy-document file://fire.json`
+and run
+```
+aws iam create-role --role-name fire-role --assume-role-policy-document file://fire.json
+```
 
 
 Then put the following into `newpolicy.json`:
@@ -80,7 +83,10 @@ Then put the following into `newpolicy.json`:
 }
 ```
 
-And run `aws iam create-policy --policy-name fire-access --policy-document file://newpolicy.json`
+And run
+```
+aws iam create-policy --policy-name fire-access --policy-document file://newpolicy.json
+```
 
 
 Finally you need to attach the policy with:
@@ -108,7 +114,10 @@ Put the following configuration into firehose.json:
             }
 }
 ```
-Then run `aws firehose create-delivery-stream --delivery-stream-name web-log-ingestion-stream --s3-destination-configuration file://firehose.json`.
+Then run
+```
+aws firehose create-delivery-stream --delivery-stream-name web-log-ingestion-stream --s3-destination-configuration file://firehose.json
+```
 
 Now you have a configured firehose for delivering to S3.
 
@@ -143,7 +152,6 @@ Then run
 ```
 sudo service aws-kinesis-agent start
 ```
-
 #### Start the logs
 
 Run

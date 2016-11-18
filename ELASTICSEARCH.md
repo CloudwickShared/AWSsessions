@@ -141,9 +141,9 @@ Then run `sudo service aws-kinesis-agent start`
 `python Fake-Apache-Log-Generator/apache-fake-log-gen.py -o LOG -n 0 -p /home/ec2-user/logs/tutorial`
 
 
-## Start ElasticSearch
+## Step 4: Start ElasticSearch
 
-Put the following in es-policy.json
+Put the following in `es-policy.json`
 
 ```
 {
@@ -166,3 +166,37 @@ Put the following in es-policy.json
 ```
 
 then run `aws es create-elasticsearch-domain --domain-name web-log-analytics --access-policies file://es-policy.json`
+
+## Step 5: Create a Kinesis Firehose to deliver to ElasticSearch
+
+Again, create `firehose-es.json` with:
+```
+{
+            "RoleARN": "arn:aws:iam::<AmazonUserID>:role/fire-role",
+            "DomainARN": "arn:aws:es:eu-west-1:<AmazonUserID>:domain/web-log-analytics",
+            "IndexName": "request_data",
+            "TypeName": "requests",
+            "IndexRotationPeriod": "NoRotation",
+            "RetryOptions": {
+              "DurationInSeconds": 300
+            },
+            "S3BackupMode": "FailedDocumentsOnly",
+            "S3Configuration": {
+              "RoleARN": "arn:aws:iam::<AmazonUserID>:role/fire-role",
+              "BucketARN": "arn:aws:s3:::cloudwick-tutorial-log-bucket",
+              "Prefix": "errors",
+              "CompressionFormat": "UNCOMPRESSED",
+              "EncryptionConfiguration": {
+                "NoEncryptionConfig": "NoEncryption"
+              },
+              "CloudWatchLoggingOptions": {
+                "Enabled": false
+              }
+            }
+
+}
+```
+
+And then run `aws firehose create-delivery-stream --delivery-stream-name web-log-aggregated-data --elasticsearch-destination-configuration file://firehose-es.json`
+
+## Step 6: Configure a Kinesis Analytics app

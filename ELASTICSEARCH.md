@@ -2,6 +2,10 @@
 
 This is an automation of [this tutorial from Amazon](https://d0.awsstatic.com/Projects/P4113850/aws-projects_build-log-analytics-solution-on-aws.pdf), which you can look at for additional context.  One thing to bear in mind - this isn't purely copy paste.  My amazon account number is 749..... and that is hardcoded in some of these files.  For your automated deployment, you should of course use your own. To find that from the command line, `aws iam get-user` and you will see you UserID.
 
+## Notice
+
+You need to replace all occurences of **cloudwick-tutorial-log-bucket** and of **749147323776**
+
 ## Step 1
 
 The setup script has already installed the fake apache log generator and AWS Kinesis agent on your EC2 instance. We will use `/home/ec2-user/logs/tutorial*` as the prefix for our log files.

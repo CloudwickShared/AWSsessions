@@ -108,9 +108,7 @@ Now you have a configured firehose delivering to S3.
 
 ### Sending logs to the firehose
 
-
-
-
+Configure aws-kinesis-agent by putting the following in `/etc/aws-kinesis/agent.json`
 
 ```
 {
@@ -132,3 +130,8 @@ Now you have a configured firehose delivering to S3.
  ]
 }
 ```
+
+Then run `sudo service aws-kinesis-agent start`
+
+#### Start the logs
+`python Fake-Apache-Log-Generator/apache-fake-log-gen.py -o LOG -n 0 -p /home/ec2-user/logs/tutorial`

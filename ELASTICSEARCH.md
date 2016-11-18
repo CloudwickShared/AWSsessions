@@ -139,3 +139,30 @@ Then run `sudo service aws-kinesis-agent start`
 
 #### Start the logs
 `python Fake-Apache-Log-Generator/apache-fake-log-gen.py -o LOG -n 0 -p /home/ec2-user/logs/tutorial`
+
+
+## Start ElasticSearch
+
+Put the following in es-policy.json
+
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "*"
+        ]
+      },
+      "Action": [
+        "es:*"
+      ],
+      "Resource": "arn:aws:es:eu-west-1:<AmazonUserId>:domain/web-log-analytics/*"
+    }
+  ]
+}
+```
+
+then run `aws es create-elasticsearch-domain --domain-name web-log-analytics --access-policies file://es-policy.json`

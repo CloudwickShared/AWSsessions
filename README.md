@@ -50,6 +50,14 @@ Wait for the instance to start fully. If this is your only instance, you can get
 ```
 instance_id=`aws ec2 describe-instances --filters "Name=key-name,Values=TutorialKeyPair" --output text --query 'Reservations[*].Instances[*].InstanceId'`
 ```
+
+The following command waits for things to be ready:
+
+```
+aws ec2 wait instance-running --instance-ids $instance_id
+```
+
+
 Let's add a tag so we can find the machine again.
 
 ```

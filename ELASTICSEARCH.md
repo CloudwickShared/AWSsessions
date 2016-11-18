@@ -16,6 +16,8 @@ The setup script has already installed the fake apache log generator and AWS Kin
 
 `aws s3 mb s3://cloudwick-tutorial-log-bucket`
 
+## Step 3: Configure Firehose
+
 ### Create a role for Firehose with permission to write to that bucket:
 
 Put the following into fire.json:
@@ -88,7 +90,7 @@ aws iam attach-role-policy --role-name fire-role --policy-arn arn:aws:iam::<Amaz
 ```
 
 
-### Configure Firehose
+
 
 Put the following configuration into firehose.json:
 

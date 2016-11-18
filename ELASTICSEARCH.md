@@ -1,6 +1,6 @@
 # Log analytics with Elasticsearch
 
-This is an automation of [this tutorial from Amazon](https://d0.awsstatic.com/Projects/P4113850/aws-projects_build-log-analytics-solution-on-aws.pdf), which you can look at for additional context.  One thing to bear in mind - this isn't purely copy paste.  My amazon account number is 749..... and that is hardcoded in some of these files.  For your automated deployment, you should of course use your own. To find that from the command line, `aws iam get-user` and you will see you UserID.
+This is an automation of [this tutorial from Amazon](https://d0.awsstatic.com/Projects/P4113850/aws-projects_build-log-analytics-solution-on-aws.pdf), which you can look at for additional context.  One thing to bear in mind - this isn't purely copy paste.  The Amazon UserId is needed in many places.  For your automated deployment, you should of course use your own. To find that from the command line, `aws iam get-user` and you will see you UserID. Use `sed -i 's/<AmazonUserId>/71459871345/g' file.json` to replace it with your own account number.
 
 ## Step 1
 
@@ -27,7 +27,7 @@ Put the following into fire.json:
                         "Effect": "Allow", 
                         "Condition": {
                             "StringEquals": {
-                                "sts:ExternalId": "749147323776"
+                                "sts:ExternalId": "<AmazonUserID>"
                             }
                         }, 
                         "Sid": ""
@@ -67,7 +67,7 @@ Then put the following into `newpolicy.json`:
         "logs:PutLogEvents"
       ],
       "Resource": [
-        "arn:aws:logs:eu-west-1:749147323776:log-group:/aws/kinesisfirehose/web-log-ingestion-stream:log-stream:*"
+        "arn:aws:logs:eu-west-1:<AmazonUserID>:log-group:/aws/kinesisfirehose/web-log-ingestion-stream:log-stream:*"
       ]
     }
   ]
@@ -80,17 +80,17 @@ And run `aws iam create-policy --policy-name fire-access --policy-document file:
 Finally you need to attach the policy with:
 
 ```
-aws iam attach-role-policy --role-name fire-role --policy-arn arn:aws:iam::749147323776:policy/fire-access
+aws iam attach-role-policy --role-name fire-role --policy-arn arn:aws:iam::<AmazonUserID>:policy/fire-access
 ```
 
 
-### Create a bucket
+### Configure Firehose
 
 Put the following configuration into firehose.json:
 
 ```
 {
-            "RoleARN": "arn:aws:iam::749147323776:role/fire-role",
+            "RoleARN": "arn:aws:iam::<AmazonUserID>:role/fire-role",
             "BucketARN": "arn:aws:s3:::cloudwick-tutorial-log-bucket",
             "Prefix": "logs",
             "CompressionFormat": "UNCOMPRESSED",
@@ -104,7 +104,7 @@ Put the following configuration into firehose.json:
 ```
 Then run `aws firehose create-delivery-stream --delivery-stream-name web-log-ingestion-stream --s3-destination-configuration file://firehose.json`.
 
-Now you have a configured firehose delivering to S3.
+Now you have a configured firehose for delivering to S3.
 
 ### Sending logs to the firehose
 

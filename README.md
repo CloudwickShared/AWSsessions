@@ -9,6 +9,7 @@ One slight thing which makes this not completely clockwork: you need to be aware
 
 ## Access Keys
 
+*note: Skip this step if you already have access keys set up*
 Log in here: https://console.aws.amazon.com/iam/home?region=eu-west-1#security_credential
 
 and create and save a new access key. You only get one chance to save it, but it's not a huge tragedy if you lose it: you just have to create another one. You will need it at the end of the process.

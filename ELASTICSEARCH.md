@@ -219,3 +219,75 @@ Again, create `firehose-es.json` with:
 And then run `aws firehose create-delivery-stream --delivery-stream-name web-log-aggregated-data --elasticsearch-destination-configuration file://firehose-es.json`
 
 ## Step 6: Configure a Kinesis Analytics app
+
+Configure an input source in `kinput.json`
+
+```
+[
+            {
+                "NamePrefix": "SOURCE_SQL_STREAM", 
+                "InputParallelism": {
+                    "Count": 1
+                }, 
+             "KinesisFirehoseInput": {
+                "ResourceARN": "arn:aws:firehose:eu-west-1:749147323776:deliverystream/web-log-ingestion-stream",
+                "RoleARN": "arn:aws:iam::749147323776:role/fire-role"
+              },
+                "InputSchema": {
+                    "RecordColumns": [
+                        {
+                            "SqlType": "VARCHAR(16)", 
+                            "Name": "host", 
+                            "Mapping": "$.host"
+                        }, 
+                        {
+                            "SqlType": "VARCHAR(32)", 
+                            "Name": "datetime", 
+                            "Mapping": "$.datetime"
+                        }, 
+                        {
+                            "SqlType": "VARCHAR(64)", 
+                            "Name": "request", 
+                            "Mapping": "$.request"
+                        }, 
+                        {
+                            "SqlType": "SMALLINT", 
+                            "Name": "response", 
+                            "Mapping": "$.response"
+                        }, 
+                        {
+                            "SqlType": "SMALLINT", 
+                            "Name": "bytes", 
+                            "Mapping": "$.bytes"
+                        }, 
+                        {
+                            "SqlType": "VARCHAR(128)", 
+                            "Name": "referer", 
+                            "Mapping": "$.referer"
+                        }, 
+                        {
+                            "SqlType": "VARCHAR(256)", 
+                            "Name": "agent", 
+                            "Mapping": "$.agent"
+                        }
+                    ], 
+                    "RecordFormat": {
+                        "MappingParameters": {
+                            "JSONMappingParameters": {
+                                "RecordRowPath": "$"
+                            }
+                        }, 
+                        "RecordFormatType": "JSON"
+                    }, 
+                    "RecordEncoding": "UTF-8"
+                }
+            }
+        ]
+
+```
+
+Then configure your SQL code and set the destination to ElasticSearch. This is not implemented here, but can be done from the web interface.
+
+## Step 7: Your analytics!
+
+You can find a link to Kibana from the ElasticSearch section on your Amazon console.

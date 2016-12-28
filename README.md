@@ -26,7 +26,7 @@ If you can run `aws s3 ls` withour error, then your set up is working.
 
 I prefer to use the CLI as much as possible, and the way to do that here is:
 
-[Create a security group with SSH access](http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-sg.html)
+## [Create a security group with SSH access](http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-sg.html)
 
 `aws ec2 create-security-group --group-name tutorial-sg --description "My tutorial Security Group"`
 
@@ -34,15 +34,73 @@ I prefer to use the CLI as much as possible, and the way to do that here is:
 
 `aws ec2 describe-security-groups --group-names tutorial-sg`
 
-[Create a new SSH key Pair](http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-keypairs.html)
+## [Create a new SSH key Pair](http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-keypairs.html)
 
 `aws ec2 create-key-pair --key-name TutorialKeyPair --query 'KeyMaterial' --output text > ~/.ssh/TutorialKeyPair.pem`
 
 `chmod 0600 ~/.ssh/TutorialKeyPair.pem`
 
-Launch a new EC2 instance with the necessary Key Pair and Security Group
+## [Create an IAM role for your instance](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html)
 
-`aws ec2 run-instances --image-id ami-9398d3e0 --count 1 --instance-type t2.micro --key-name TutorialKeyPair --security-groups tutorial-sg`
+So, this machine will be our "control centre" for doing EC2 stuff, including launching other services. Let's give it a reasonably powerful (but not God-mode) IAM role.
+
+We create a policy that allows the EC2 service to assume the role (in `ec2-trust-policy.json`)
+
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": { "Service": "ec2.amazonaws.com"},
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+```
+
+We create a security policy in the file `PowerUser.json`:
+
+```
+{
+  "Version": "2012-10-17",
+  "Statement":[{
+    "Effect":"Allow",
+    "Action":"*",
+    "Resource":"*"
+  },
+  {
+    "Effect":"Deny",
+    "Action":"iam:*",
+    "Resource":"*"
+  }
+ ]
+}
+```
+
+OK, so we've specified that EC2 can assume this role, and that the policy is to allow all actions (with one important exception).  For now, those
+files are just sitting on our computer, so we need to tell AWS about them!
+
+### Create a role
+
+`aws iam create-role --role-name poweraccess --assume-role-policy-document file://ec2-trust-policy.json`
+
+### Attach the policy to the role
+
+`aws iam put-role-policy --role-name poweraccess --policy-name ManagementPermissions --policy-document file://PowerUser.json`
+
+### Create an instance profile
+
+`aws iam create-instance-profile --instance-profile-name poweraccess-profile`
+
+### Attach the role to the instance profile
+
+`aws iam add-role-to-instance-profile --instance-profile-name poweraccess-profile --role-name poweraccess`
+
+
+## Launch a new EC2 instance with the necessary Key Pair, Role,  and Security Group
+
+`aws ec2 run-instances --image-id ami-9398d3e0 --count 1 --instance-type t2.micro --key-name TutorialKeyPair --iam-instance-profile Name="poweraccess-profile" --security-groups tutorial-sg`
 
 
 Wait for the instance to start fully. If this is your only instance, you can get the instance id automatically with the following command, otherwise you can see it in the output of the `run-instances` command.

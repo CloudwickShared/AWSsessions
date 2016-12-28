@@ -5,12 +5,14 @@
 
 sudo yum -y update
 echo "Installing developer tools..."
-sudo wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
-sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
+yum -y install epel-release
+
+# sudo wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+# sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
 sudo yum install java-1.7.0-openjdk
 sudo yum install -y apache-maven gcc # build tools
 sudo yum install -y git emacs vim # hacking tools
-sudo yum install –y aws-kinesis-agent
+sudo yum install -y aws-kinesis-agent
 # echo "Downloading aws java sdk..."
 # wget https://sdk-for-java.amazonwebservices.com/latest/aws-java-sdk.zip
 # unzip aws-java-sdk.zip
@@ -25,11 +27,6 @@ cd ..
 echo "installing requirements for Fake Log generator"
 sudo pip install fake-factory numpy pytz
 git clone https://github.com/kiritbasu/Fake-Apache-Log-Generator.git
-
-
-
-echo "Please enter your Amazon API keys to finish setup"
-aws configure
 
 echo "Run: cd Fake Apache-Log-Generator&& python apache-fake-log-gen.py -o LOG -n 0"
 echo "When you want to generate infinitely long fake logs"

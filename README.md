@@ -44,6 +44,8 @@ I prefer to use the CLI as much as possible, and the way to do that here is:
 
 So, this machine will be our "control centre" for doing EC2 stuff, including launching other services. Let's give it a reasonably powerful (but not God-mode) IAM role.
 
+Note: these files are part of the repository, so if you've cloned it, they're sitting in the directory ready to use.
+
 We create a policy that allows the EC2 service to assume the role (in `ec2-trust-policy.json`)
 
 ```
@@ -97,10 +99,19 @@ files are just sitting on our computer, so we need to tell AWS about them!
 
 `aws iam add-role-to-instance-profile --instance-profile-name poweraccess-profile --role-name poweraccess`
 
+## Add a script to execute when the instance launches
+
+If you didn't clone the repo, you can get this from the git repository by doing:
+
+```
+wget https://raw.githubusercontent.com/derwinmcgeary/AWSsessions/master/setup-aws.sh
+```
+
+You will almost certainly want to make this a custom script which (for example) synchronises data with an S3 bucket or installs an custom components needed (for example specialist data processing code). In the end you can pass this script by using the oddly-named `--user-data` parameter when running the instance.
 
 ## Launch a new EC2 instance with the necessary Key Pair, Role,  and Security Group
 
-`aws ec2 run-instances --image-id ami-9398d3e0 --count 1 --instance-type t2.micro --key-name TutorialKeyPair --iam-instance-profile Name="poweraccess-profile" --security-groups tutorial-sg`
+`aws ec2 run-instances --image-id ami-9398d3e0 --count 1 --instance-type t2.micro --key-name TutorialKeyPair --user-data file://setup-aws.sh --iam-instance-profile Name="poweraccess-profile" --security-groups tutorial-sg`
 
 
 Wait for the instance to start fully. If this is your only instance, you can get the instance id automatically with the following command, otherwise you can see it in the output of the `run-instances` command.
@@ -128,25 +139,16 @@ Now you can query whether the instance is running or not by polling with this co
 aws ec2 describe-instances --filter "Name=tag:Name,Values=TutorialWorkstation" --output text --query 'Reservations[*].Instances[*].State.Name'
 
 ```
-When the instance has started (state is `running`)
+When the instance has started (state is `running`), get the public IP address with
 
 ```
 myec2=`aws ec2 describe-instances --filter "Name=tag:Name,Values=TutorialWorkstation" --output text --query 'Reservations[*].Instances[*].PublicIpAddress'`
 ```
-
+and ssh in like this:
 ```
 ssh -i ~/.ssh/TutorialKeyPair.pem ec2-user@$myec2
 ```
-And when you get there, you can set the box up for AWS development by downloading and running the setup script
 
-`wget https://raw.githubusercontent.com/derwinmcgeary/AWSsessions/master/setup-aws.sh`
-
-`chmod +x setup-aws.sh`
-
-`./setup-aws.sh`
-
-You can put the kettle on as everything updates and installs, and at the end you will be prompted to input your AWS API credentials (created at the start).
-
-At this point you have a machine which can compile code using the AWS SDK and you can launch new machines and clusters. I would advise treating this as a "disposable" computer, which means don't keep large amounts of code on it, push everything to SCM (e.g. gitlab/github), and terminate it at the end of the day. That way your build process and deploy procedures will be definitely repeatable and you won't have the "works on my computer" problem or the problem that you've tinkered with something until it works but you can't explain to someone else how you did it. It will also save you money in general if you "put away your toys" at the end of the day, but that means you need to have the discipline to script the setup and shutdown.
+You might need to wait for a minute for your initial setup script to finish. At this point you have a machine which can compile code using the AWS SDK and you can launch new machines and clusters. I would advise treating this as a "disposable" computer, which means don't keep large amounts of code on it, push everything to SCM (e.g. gitlab/github), and terminate it at the end of the day. That way your build process and deploy procedures will be definitely repeatable and you won't have the "works on my computer" problem or the problem that you've tinkered with something until it works but you can't explain to someone else how you did it. It will also save you money in general if you "put away your toys" at the end of the day, but that means you need to have the discipline to script the setup and shutdown.
 
 To terminate your instance, use `aws ec2 terminate-instances --instance-ids $instance_id`.
